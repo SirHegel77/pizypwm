@@ -1,10 +1,11 @@
-PiZyPwm
+﻿PiZyPwm
 =======
 
 PiZyPwm, for Raspberry (Pi) Ea(zy) PWM, is an easy way to implement PWM (Pulse Width Modulation) output on a Raspberry Pi using Python language.
 
 * [PiZyPwm in action](http://www.youtube.com/watch?v=1X_FYJ5x6Wo)
 * [PiZyPwm with a digital oscilloscope](http://www.youtube.com/watch?v=aP1F67PtaVc)
+
 
 
 Warning
@@ -23,18 +24,17 @@ Requirements
 
 * First of all : a Raspberry Pi
 * Python (with Debian / Raspbian : packages “python” and “python-dev”)
-* RPi.GPIO library (0.4.0a or newer). On Raspbian, install package “python-rpi.gpio”.
+* quick2wire-python-api from [here](https://github.com/quick2wire/quick2wire-python-api). 
 
 
 Example usage
 -------------
 
-    import RPi.GPIO as GPIO
-    
+      
     from pizypwm import *
   
-    # Set GPIO pin #7 as PWM output with a frequency of 100 Hz
-    pwm = PiZyPwm(100, 7, GPIO.BOARD)
+    # Set GPIO pin #0 as PWM output with a frequency of 100 Hz
+    pwm = PiZyPwm(100, 0)
     
     # Start PWM output with a duty cycle of 20%. The pulse (HIGH state) will have a duration of
     # (1 / 100) * (20 / 100) = 0.002 seconds, followed by a low state with a duration of
