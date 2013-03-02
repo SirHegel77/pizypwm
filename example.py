@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import RPi.GPIO as GPIO
 import time
 import signal
 
@@ -15,8 +14,6 @@ def endProcess(signalnum = None, handler = None):
     sixth.stop()
     seventh.stop()
     eighth.stop()
-
-    GPIO.cleanup()
     exit(0)
 
 # Prepare handlers for process exit
@@ -24,14 +21,14 @@ signal.signal(signal.SIGTERM, endProcess)
 signal.signal(signal.SIGINT, endProcess)
 
 # Initialize PWM outputs
-first   = PiZyPwm(100, 7, GPIO.BOARD)
-second  = PiZyPwm(100, 11, GPIO.BOARD)
-third   = PiZyPwm(100, 12, GPIO.BOARD)
-fourth  = PiZyPwm(100, 13, GPIO.BOARD)
-fifth   = PiZyPwm(100, 15, GPIO.BOARD)
-sixth   = PiZyPwm(100, 16, GPIO.BOARD)
-seventh = PiZyPwm(100, 18, GPIO.BOARD)
-eighth  = PiZyPwm(100, 22, GPIO.BOARD)
+first   = PiZyPwm(100, 0)
+second  = PiZyPwm(100, 1)
+third   = PiZyPwm(100, 2)
+fourth  = PiZyPwm(100, 3)
+fifth   = PiZyPwm(100, 4)
+sixth   = PiZyPwm(100, 5)
+seventh = PiZyPwm(100, 6)
+eighth  = PiZyPwm(100, 7)
 
 # Initialize directions 
 #  "up" = we will allocate more and more time to HIGH output (aka the LED will be brighter)

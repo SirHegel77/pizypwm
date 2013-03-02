@@ -1,15 +1,14 @@
-import RPi.GPIO as GPIO
+from quick2wire.gpio import pins, Out
 import threading
 import time
  
 class PiZyPwm(threading.Thread):
 
-  def __init__(self, frequency, gpioPin, gpioScheme):
+  def __init__(self, frequency, gpioPin):
      """ 
      Init the PiZyPwm instance. Expected parameters are :
      - frequency : the frequency in Hz for the PWM pattern. A correct value may be 100.
      - gpioPin : the pin number which will act as PWM ouput
-     - gpioScheme : the GPIO naming scheme (see RPi.GPIO documentation)
      """
      self.baseTime = 1.0 / frequency
      self.maxCycle = 100.0
@@ -17,7 +16,7 @@ class PiZyPwm(threading.Thread):
      self.gpioPin = gpioPin
      self.terminated = False
      self.toTerminate = False
-     GPIO.setmode(gpioScheme)
+     
 
 
   def start(self, dutyCycle):
@@ -29,7 +28,7 @@ class PiZyPwm(threading.Thread):
     stay HIGH for 1*(25/100) seconds on HIGH output, and 1*(75/100) seconds on LOW output.
     """
     self.dutyCycle = dutyCycle
-    GPIO.setup(self.gpioPin, GPIO.OUT)
+    
     self.thread = threading.Thread(None, self.run, None, (), {})
     self.thread.start()
 
@@ -38,14 +37,16 @@ class PiZyPwm(threading.Thread):
     """
     Run the PWM pattern into a background thread. This function should not be called outside of this class.
     """
-    while self.toTerminate == False:
-      if self.dutyCycle > 0:
-        GPIO.output(self.gpioPin, GPIO.HIGH)
-        time.sleep(self.dutyCycle * self.sliceTime)
-      
-      if self.dutyCycle < self.maxCycle:
-        GPIO.output(self.gpioPin, GPIO.LOW)
-        time.sleep((self.maxCycle - self.dutyCycle) * self.sliceTime)
+    pin = pins.pin(self.gpioPin, direction=Out)
+    with pin:
+        while self.toTerminate == False:
+            if self.dutyCycle > 0:
+                pin.value = 1
+                time.sleep(self.dutyCycle * self.sliceTime)
+     
+            if self.dutyCycle < self.maxCycle:
+                pin.value = 0
+                time.sleep((self.maxCycle - self.dutyCycle) * self.sliceTime)
 
     self.terminated = True
 
@@ -81,6 +82,3 @@ class PiZyPwm(threading.Thread):
     while self.terminated == False:
       # Just wait
       time.sleep(0.01)
-  
-    GPIO.output(self.gpioPin, GPIO.LOW)
-    GPIO.setup(self.gpioPin, GPIO.IN)
